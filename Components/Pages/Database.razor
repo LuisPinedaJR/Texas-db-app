@@ -1,0 +1,113 @@
+@page "/database"
+@rendermode InteractiveServer
+
+<PageTitle>Database</PageTitle>
+
+<h1>Database select</h1>
+
+<div class="form-group">
+    <label for="databaseSelect">Select a database:</label>
+    <select id="databaseSelect" class="form-control" @onchange="HandleDatabaseSelection">
+        <option value="">-- Select Database --</option>
+        @foreach (var db in Databases)
+        {
+            <option value="@db">@db</option>
+        }
+    </select>
+</div>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger mt-3">
+        @ErrorMessage
+    </div>
+}
+else if (!string.IsNullOrEmpty(SelectedDatabase))
+{
+    <div class="alert alert-success mt-3">
+        You have selected @SelectedDatabase!
+    </div>
+}
+
+<div class="mt-5">
+    <h2>Selection History</h2>
+    @if (SelectionHistory.Count > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Database Name</th>
+                    <th>Selected At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var selection in SelectionHistory)
+                {
+                    <tr>
+                        <td>@selection.DatabaseName</td>
+                        <td>@selection.SelectedAt.ToString("MMMM dd, yyyy HH:mm:ss")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No database selections have been made today.</p>
+    }
+</div>
+
+@code {
+    private List<string> Databases { get; set; } = new List<string>
+{
+"Big Texas Oil lease",
+"Big texas drill contracts",
+"Big Texas Oil well",
+"Big Texas Oil production",
+"Big Texas Oil sales",
+"Big Texas Oil distribution",
+"Big Texas Oil refinery",
+};
+
+    private string SelectedDatabase { get; set; } = string.Empty;
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private List<DatabaseSelection> SelectionHistory { get; set; } = new List<DatabaseSelection>();
+
+    private void HandleDatabaseSelection(ChangeEventArgs e)
+    {
+        string selectedValue = e.Value?.ToString() ?? string.Empty;
+        ErrorMessage = string.Empty;
+
+        if (!string.IsNullOrEmpty(selectedValue))
+        {
+            // Check if this database was already selected today
+            bool alreadySelectedToday = SelectionHistory.Any(selection =>
+            selection.DatabaseName.Equals(selectedValue, StringComparison.OrdinalIgnoreCase) &&
+            selection.SelectedAt.Date == DateTime.Today);
+
+            if (alreadySelectedToday)
+            {
+                ErrorMessage = $"Database '{selectedValue}' has already been selected for the day, check below for timestamp.";
+                SelectedDatabase = string.Empty;
+            }
+            else
+            {
+                SelectedDatabase = selectedValue;
+
+                // Add to history only if a valid selection was made
+                SelectionHistory.Add(new DatabaseSelection
+                {
+                    DatabaseName = selectedValue,
+                    SelectedAt = DateTime.Now
+                });
+            }
+        }
+    }
+
+    private class DatabaseSelection
+    {
+        public string DatabaseName { get; set; } = string.Empty;
+        public DateTime SelectedAt { get; set; }
+    }
+}
