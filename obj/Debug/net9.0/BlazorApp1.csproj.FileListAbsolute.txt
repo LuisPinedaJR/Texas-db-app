@@ -77,3 +77,4 @@
 /Users/luishome/Desktop/Projects/Blazor/BlazorApp1/obj/Debug/net9.0/ref/BlazorApp1.dll
 /Users/luishome/Desktop/Projects/Blazor/BlazorApp1/obj/Debug/net9.0/compressed/ysu4imbah3-bkvbbxnyhk.gz
 /Users/luishome/Desktop/Projects/Blazor/BlazorApp1/obj/Debug/net9.0/compressed/uxxncn5hnr-bkvbbxnyhk.gz
+/Users/luishome/Desktop/Projects/Blazor/BlazorApp1/obj/Debug/net9.0/BlazorApp1.sourcelink.json

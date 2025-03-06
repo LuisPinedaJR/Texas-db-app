@@ -1,11 +1,22 @@
+using BlazorApp1;
 using BlazorApp1.Components;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Kestrel to listen on specific IP
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(3389); // Listen on port 3389 on all network interfaces
+});
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Configure ServerSettings
+builder.Services.Configure<ServerSettings>(
+    builder.Configuration.GetSection("ServerSettings"));
 
 var app = builder.Build();
 
