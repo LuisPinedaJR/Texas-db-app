@@ -4,11 +4,14 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to listen on specific IP
-builder.WebHost.ConfigureKestrel(serverOptions =>
+// Configure Kestrel based on environment
+if (!builder.Environment.IsDevelopment())
 {
-    serverOptions.ListenAnyIP(3389); // Listen on port 3389 on all network interfaces
-});
+    builder.WebHost.ConfigureKestrel(serverOptions =>
+    {
+        serverOptions.ListenAnyIP(3389); // Listen on port 3389 in production // dotnet publish -c Release
+    });
+}
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
